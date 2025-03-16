@@ -1,0 +1,45 @@
+import logging
+from datetime import datetime
+from sklearn.datasets import load_iris
+from sklearn.model_selection import train_test_split
+from sklearn.ensemble import RandomForestClassifier
+from sklearn.metrics import accuracy_score
+
+# Create a unique log file name using a timestamp
+timestamp = datetime.now().strftime("%Y%m%d_%H%M%S")
+log_filename = f"ml_experiment_{timestamp}.log"
+
+# Set up the logging configuration with the unique filename
+logging.basicConfig(
+    level=logging.INFO,
+    filename=log_filename,           # Unique log file per experiment run
+    filemode='w',                    # Write mode for each new log file
+    format='%(asctime)s - %(levelname)s - %(message)s'
+)
+
+logging.info("Machine Learning experiment started.")
+
+# Load the Iris dataset
+iris = load_iris()
+X = iris.data
+y = iris.target
+logging.info("Iris dataset loaded with {} samples.".format(len(X)))
+
+# Split the dataset into training and testing sets
+X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.2, random_state=42)
+logging.info("Dataset split into training and testing sets.")
+
+# Train a RandomForestClassifier model
+clf = RandomForestClassifier(n_estimators=100, random_state=42)
+clf.fit(X_train, y_train)
+logging.info("RandomForestClassifier model trained.")
+
+# Make predictions on the test set
+y_pred = clf.predict(X_test)
+logging.info("Predictions made on the test set.")
+
+# Evaluate the model's accuracy
+accuracy = accuracy_score(y_test, y_pred)
+logging.info("Model Accuracy: {:.2f}%".format(accuracy * 100))
+
+logging.info("Machine Learning experiment completed.")
